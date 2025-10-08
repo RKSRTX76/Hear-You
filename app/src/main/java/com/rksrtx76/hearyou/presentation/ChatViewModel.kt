@@ -96,6 +96,4 @@ class ChatViewModel @Inject constructor() : ViewModel() {
             .replace(Regex("\\n{2,}"), "\n")
             .trim()
     }
-
-
 }

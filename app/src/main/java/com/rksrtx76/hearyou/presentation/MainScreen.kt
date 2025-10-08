@@ -58,13 +58,12 @@ fun MainScreen(){
     val chatViewModel = hiltViewModel<ChatViewModel>()
     val chatState = chatViewModel.chatState.collectAsState().value
     val voiceViewModel = hiltViewModel<VoiceToTextViewModel>()
+//    val textViewModel = hiltViewModel<ElevenLabsTTSViewModel>()
     val textViewModel = hiltViewModel<TextToSpeechViewModel>()
     val voiceState = voiceViewModel.state.collectAsState().value
     var canRecord by remember {
         mutableStateOf(false)
     }
-
-
 
     // permission request
     val recordAudioLauncher = rememberLauncherForActivityResult(
@@ -83,6 +82,7 @@ fun MainScreen(){
     LaunchedEffect(chatState.response) {
         if (chatState.response.isNotEmpty()) {
             Log.d("MainScreen", "AI Response: ${chatState.response}")
+//            textViewModel.speak(chatState.response, voiceName = "rachel")  // default en-US
             textViewModel.speak(chatState.response)  // default en-US
         }
     }
@@ -105,8 +105,6 @@ fun MainScreen(){
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // glowing border when speaking
-
         Column(
             modifier = Modifier
                 .fillMaxSize(),

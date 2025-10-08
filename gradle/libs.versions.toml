@@ -1,6 +1,6 @@
 [versions]
 accompanistSystemuicontroller = "0.30.1"
-agp = "8.12.3"
+agp = "8.13.0"
 coilCompose = "2.7.0"
 generativeai = "0.9.0"
 hiltAndroid = "2.52"
