@@ -25,6 +25,7 @@ object ChatData{
                 isFromUser = false
             )
         }catch (e : Exception){  // in case prompt violets the rules
+            e.printStackTrace() // or Log.e("ChatData", "Error:", e)
             return Chat(
                 prompt = "Something went wrong, please try again later.",
                 isFromUser = false
