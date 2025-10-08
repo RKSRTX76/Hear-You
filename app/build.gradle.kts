@@ -24,6 +24,8 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String","API_KEY", properties.getProperty("API_KEY"))
+        buildConfigField("String","ELEVENLABS_API_KEY", properties.getProperty("ELEVENLABS_API_KEY"))
+
     }
 
     buildTypes {
@@ -49,6 +51,9 @@ android {
 }
 
 dependencies {
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // Gemini client
     implementation(libs.generativeai)

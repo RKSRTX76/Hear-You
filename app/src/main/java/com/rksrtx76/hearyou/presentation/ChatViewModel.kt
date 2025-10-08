@@ -18,6 +18,9 @@ class ChatViewModel @Inject constructor() : ViewModel() {
     private val _chatState = MutableStateFlow(ChatState())
     val chatState = _chatState.asStateFlow()
 
+    private val conversationHistory = mutableListOf<Pair<String, String>>() // Pair<User, Assistant>
+
+
     private var isFirstResponse = true
 
     init {
@@ -62,18 +65,31 @@ class ChatViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun getResponse(prompt: String){
+    private fun getResponse(prompt: String) {
         viewModelScope.launch {
-            val friendlyPrompt = """
-                Please talk to me like a close friend in casual, natural way.
-                Keep your answers short (1-3 sentences), warm, and conversational. 
-                Don't over-explain unless I specifically ask.
-                
-                User: $prompt
-            """.trimIndent()
+            // 🧠 Include conversation memory in prompt
+            val friendlyPrompt = buildString {
+                appendLine("You are a friendly AI friend. Talk naturally and warmly in short, casual sentences (1–5 sentences).")
+                appendLine("Keep responses conversational and human-like.")
+                appendLine("Here’s our previous conversation:")
 
+                for ((user, bot) in conversationHistory) {
+                    appendLine("User: $user")
+                    appendLine("You: $bot")
+                }
+
+                appendLine("User: $prompt")
+            }
+
+            // Get response from ChatData
             val response = ChatData.getResponse(friendlyPrompt)
             val cleanedResponse = cleanMarkdown(response.prompt)
+
+            // Add to memory (with size limit)
+            conversationHistory.add(prompt to cleanedResponse)
+            if (conversationHistory.size > 15) {
+                conversationHistory.removeAt(0) // keep last 15 messages
+            }
 
             _chatState.update {
                 it.copy(
@@ -83,6 +99,7 @@ class ChatViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
 
     private fun cleanMarkdown(input: String): String {
         return input

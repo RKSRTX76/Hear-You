@@ -14,8 +14,10 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +37,8 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,13 +64,12 @@ fun MainScreen(){
     val chatViewModel = hiltViewModel<ChatViewModel>()
     val chatState = chatViewModel.chatState.collectAsState().value
     val voiceViewModel = hiltViewModel<VoiceToTextViewModel>()
-    val textViewModel = hiltViewModel<TextToSpeechViewModel>()
+    val textViewModel = hiltViewModel<ElevenLabsTTSViewModel>()
     val voiceState = voiceViewModel.state.collectAsState().value
     var canRecord by remember {
         mutableStateOf(false)
     }
-
-
+    val selectedVoice by textViewModel.selectedVoice.collectAsState()
 
     // permission request
     val recordAudioLauncher = rememberLauncherForActivityResult(
@@ -83,7 +88,7 @@ fun MainScreen(){
     LaunchedEffect(chatState.response) {
         if (chatState.response.isNotEmpty()) {
             Log.d("MainScreen", "AI Response: ${chatState.response}")
-            textViewModel.speak(chatState.response)  // default en-US
+            textViewModel.speak(chatState.response)
         }
     }
 
@@ -119,6 +124,20 @@ fun MainScreen(){
         }
 
         EdgeGlowOverlay(isSpeaking = voiceState.isSpeaking)
+
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 120.dp), // positions above mic
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            VoiceSelector(
+                voices = textViewModel.voiceIds,
+                selectedVoice = selectedVoice,
+                onVoiceSelected = { textViewModel.setSelectedVoice(it) }
+            )
+        }
 
         FloatingActionButton(
             onClick = {
@@ -166,6 +185,39 @@ fun ModelChat(response : String){
     }
 }
 
+
+@Composable
+fun VoiceSelector(
+    voices: Map<String, String>,
+    selectedVoice: String,
+    onVoiceSelected: (String) -> Unit
+) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        items(voices.keys.toList()) { voiceName ->
+            val isSelected = voiceName == selectedVoice
+            Surface(
+                modifier = Modifier
+                    .clickable { onVoiceSelected(voiceName) },
+                shape = RoundedCornerShape(50),
+                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.6f))
+            ) {
+                Text(
+                    text = voiceName.replaceFirstChar { it.uppercase() },
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+    }
+}
 
 
 
