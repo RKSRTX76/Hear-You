@@ -1,6 +1,14 @@
+<div align="center">
+   
 # 🎙️ HearYou
 
 **HearYou** is an Android voice companion app that lets you have natural, spoken conversations with AI-powered personas. Speak freely — HearYou listens, thinks, and talks back in a warm, human voice.
+
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)
+
+</div>
 
 ---
 
@@ -34,7 +42,7 @@
 
 ## 📸 Screenshots
 
-> _Coming soon_
+<img src="https://github.com/user-attachments/assets/ba752090-3fb9-4f54-aa9e-5f22cd696d1b" alt="Screenshot_main" width="250"/>
 
 ---
 
@@ -70,15 +78,15 @@
 ```
 app/
 ├── data/
-│   ├── api/          # Gemini & ElevenLabs API clients (Ktor)
-│   ├── model/        # Data classes (ChatMessage, Voice, etc.)
-│   └── repository/   # ConversationRepositoryImpl
+│   ├── api/          
+│   ├── model/        
+│   └── repository/  
 ├── domain/
-│   └── repository/   # Repository interface
+│   └── repository/   
 ├── presentation/
-│   ├── components/   # Reusable Compose components
-│   ├── screens/      # ConversationScreen
-│   └── viewmodel/    # ConversationViewModel + VoiceState
+│   ├── components/   
+│   ├── screens/      
+│   └── viewmodel/    
 └── util/
     └── Constants.kt
 ```
@@ -100,16 +108,6 @@ Each voice is backed by an ElevenLabs voice ID and comes with a name, personalit
 
 ---
 
-## 📄 License
-
-```
-MIT License — see LICENSE for details
-```
-
----
-
-## 🙏 Acknowledgements
-
-- [Google Gemini](https://deepmind.google/technologies/gemini/) for the conversational AI backbone
-- [ElevenLabs](https://elevenlabs.io) for lifelike voice synthesis
-- [Jetpack Compose](https://developer.android.com/jetpack/compose) for the UI toolkit
+<div align="center">
+  Made with ❤️ using Kotlin & Jetpack Compose
+</div>
